@@ -7,6 +7,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace FSM_Simulator
 {
@@ -66,8 +67,9 @@ namespace FSM_Simulator
             StateChange change = Form1.state_present.list_of_state_changes.Single(r => r.next_state.state_name == Form1.list_of_possible_next_states[index]);
             if (change.type == StateChange.Type.SEND)
             {
-                Message m = create_message(true, Form1.FSM_name, change.to, change.signal);
+                Message m = create_message(true, Form1.message_counter, Form1.FSM_name, change.to, change.signal);
                 send_message(m);
+                Form1.message_counter++;
                 Form1.state_present = change.next_state;
             }
             if (change.type == StateChange.Type.RECIEVE)
@@ -82,11 +84,12 @@ namespace FSM_Simulator
             }
         }
         //tworzy wiadomosc do wyslania
-        public static Message create_message(bool type_, string from_, string to_, string signal_)
+        public static Message create_message(bool type_, int increment, string from_, string to_, string signal_)
         {
             var msg = new Message();
 
             msg.type_of_information = type_;
+            msg.i = increment;
             msg.from = from_;
             msg.to = to_;
             msg.signal = signal_;
@@ -94,12 +97,9 @@ namespace FSM_Simulator
             return msg;
         }
         //zajmuje sie odebrana wiadomoscia
-        //dopisać co sie dzieje dla wiadomości informacyjnej(bez sygnału)
         public static void message_handler(Message msg)
         {
             bool flag_exist = false;
-            if (msg.type_of_information == true)
-            {
                 foreach (MessageQueue msg_Queue in Form1.list_of_message_queues)
                 {
                     if (msg.from == msg_Queue.from)
@@ -116,11 +116,8 @@ namespace FSM_Simulator
                     msgQueue.signals.Enqueue(msg.signal);
                     Form1.list_of_message_queues.Add(msgQueue);
                 }
-            }
-            else
-            {
-
-            }
+                msg.type_of_information = false;
+                send_message(msg);
         }
         //wysyla wiadomosc na broadcascie przez UDP 
         //zrobić!!!
@@ -128,12 +125,7 @@ namespace FSM_Simulator
         {
 
         }
-        //wczytuje opis automatu z pliku .xml
-        //zrobić
-        public static void load_from_xml()
-        {
 
-        }
         //Psuj, jeśli true to może zgubić sygnał
         public static void lose_some_signals(bool lose_signals, Message msg)
         {

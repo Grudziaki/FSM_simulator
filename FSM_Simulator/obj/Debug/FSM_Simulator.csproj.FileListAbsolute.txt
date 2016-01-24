@@ -20,7 +20,6 @@ C:\Users\Ciesielszczaki\Desktop\FSM_simulator\FSM_Simulator\obj\Debug\FSM_Simula
 C:\Users\Ciesielszczaki\Desktop\FSM_simulator\FSM_Simulator\obj\Debug\FSM_Simulator.pdb
 C:\Users\Ciesielszczaki\Desktop\FSM_simulator\FSM_Simulator\bin\Debug\FSM_Simulator.exe
 C:\Users\Ciesielszczaki\Desktop\FSM_simulator\FSM_Simulator\bin\Debug\FSM_Simulator.pdb
-C:\Users\Ciesielszczaki\Desktop\FSM_simulator\FSM_Simulator\obj\Debug\FSM_Simulator.csprojResolveAssemblyReference.cache
 C:\Users\Ciesielszczaki\Desktop\FSM_simulator\FSM_Simulator\obj\Debug\FSM_Simulator.Form1.resources
 C:\Users\Ciesielszczaki\Desktop\FSM_simulator\FSM_Simulator\obj\Debug\FSM_Simulator.Properties.Resources.resources
 C:\Users\Ciesielszczaki\Desktop\FSM_simulator\FSM_Simulator\obj\Debug\FSM_Simulator.csproj.GenerateResource.Cache

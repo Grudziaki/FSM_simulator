@@ -18,10 +18,21 @@ namespace FSM_Simulator
             public enum Type { SEND, RECIEVE, TAU };
 
             public State next_state;
+            public string next_state_string;
             public Type type;
             public string from; // dla RECIEVE
             public string to; // dla SEND     
             public string signal; // dla RECIEVE sygnal otrzymany, dla SEND do wyslania
+
+            public StateChange(string next, StateChange.Type type_, string from_, string to_, string signal_)
+            {
+                next_state_string = next;
+                type = type_;
+                from = from_;
+                to = to_;
+                signal = signal_;
+            }
+
         }
     //kolejka od konkretnego automatu
     public class MessageQueue
@@ -32,7 +43,8 @@ namespace FSM_Simulator
     //wiadomosc przesylana miedzy automatami
     public class Message
         {
-            public bool type_of_information; // true - zawiera sygnal, false - informacja dla innych aplikacji
+            public bool type_of_information; // true - wyslane, false - odebrane
+            public int i;
             public string from;
             public string to;
             public string signal;
