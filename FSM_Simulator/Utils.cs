@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
+using System.Windows.Forms;
 
 namespace FSM_Simulator
 {
@@ -133,5 +134,21 @@ namespace FSM_Simulator
         {
 
         }
+        //Psuj, jeśli true to może zgubić sygnał
+        public static void lose_some_signals(bool lose_signals, Message msg)
+        {
+            if (lose_signals == true)
+            {
+                Random rnd = new Random();
+                bool flag = rnd.Next(0, 2) == 0;
+                if (flag == true)
+                    message_handler(msg);
+                else
+                    MessageBox.Show("Zgubiono wiadomość");
+            }
+            else
+                message_handler(msg);
+        }
+
     }
 }
