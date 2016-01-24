@@ -11,6 +11,11 @@ namespace FSM_Simulator
     {
         public string state_name;
         public List<StateChange> list_of_state_changes = new List<StateChange>();
+
+        public State()
+        {
+            state_name = null;
+        }
     }
     //opis przejscia i jego parametrow
     public class StateChange

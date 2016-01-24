@@ -20,7 +20,7 @@ namespace FSM_Simulator
         //lista wszystkich kolejek automatu FSM
         public static List<MessageQueue> list_of_message_queues = new List<MessageQueue>();
         //Obecny stan automatu
-        public static State state_present;
+        public static State state_present = new State();
         //Nazwa automatu
         public static string FSM_name;
 
@@ -28,7 +28,17 @@ namespace FSM_Simulator
 
         public Form1()
         {
-            InitializeComponent();
+            try
+            {
+                InitializeComponent();
+                show_possible_changes();
+                
+            }
+            catch(Exception e)
+            {
+                MessageBox.Show("blad: " + e);
+            }
+            
         }
 
         //wczytuje opis automatu z pliku .xml
@@ -38,15 +48,20 @@ namespace FSM_Simulator
             try
             {
                 XDocument config = XDocument.Load(filename);
-                State stan = new State();
+                
                 foreach (XElement state in config.Descendants("State"))
                 {
+                    State stan = new State();
                     stan.state_name = (string)state.Attribute("State_Name");
                     stan.list_of_state_changes.Clear();
                     foreach (XElement state_hop in state.Descendants("State_Hop"))
-                        stan.list_of_state_changes.Add(new StateChange((string)state_hop.Attribute("Next_State"), (StateChange.Type)Enum.Parse(typeof(StateChange.Type), (string)state_hop.Attribute("State_Type")), (string)state_hop.Attribute("Signal_From"), (string)state_hop.Attribute("Signal_To"), (string)state_hop.Attribute("Signal")));
+                    {
+                        stan.list_of_state_changes.Add(new StateChange((string)state_hop.Attribute("Next_State"), (StateChange.Type)Enum.Parse(typeof(StateChange.Type), (string)state_hop.Attribute("State_Type")), (string)state_hop.Attribute("Signal_From"), (string)state_hop.Attribute("Signal_To"), (string)state_hop.Attribute("Signal")));                    
+                    }
                     list_of_states.Add(stan);
                 }
+
+                state_present = list_of_states[0];
             }
             catch (Exception e)
             {
@@ -56,7 +71,8 @@ namespace FSM_Simulator
 
         private void button1_Click(object sender, EventArgs e)
         {
-
+            
+            show_possible_changes();
         }
 
         private void richTextBox1_TextChanged(object sender, EventArgs e)
@@ -64,6 +80,14 @@ namespace FSM_Simulator
 
         }
 
-        
+        public void show_possible_changes() 
+        {
+            richTextBox1.Clear();
+            Utils.check_possible_states();
+            foreach (string change in list_of_possible_next_states)
+            {
+                richTextBox1.AppendText(Environment.NewLine + change);
+            } 
+        }
     }
 }

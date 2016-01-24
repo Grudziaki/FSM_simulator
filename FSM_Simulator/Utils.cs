@@ -43,19 +43,27 @@ namespace FSM_Simulator
         //sprawdza kolejki i możliwe nastepne stany
         public static void check_possible_states()
         {
-            foreach (StateChange change in Form1.state_present.list_of_state_changes)
+            try
             {
                 Form1.list_of_possible_next_states.Clear();
-                if ((change.type == StateChange.Type.SEND) || (change.type == StateChange.Type.TAU))
+                foreach (StateChange change in Form1.state_present.list_of_state_changes)
                 {
-                    Form1.list_of_possible_next_states.Add(change.next_state.state_name);
+                    if ((change.type == StateChange.Type.SEND) || (change.type == StateChange.Type.TAU))
+                    {
+                        string name = change.next_state_string;
+                        Form1.list_of_possible_next_states.Add(name);
+                    }
+                    else
+                    {
+                        MessageQueue m = Form1.list_of_message_queues.Single(r => r.from == change.from);
+                        if (m.signals.Peek() == change.signal)
+                            Form1.list_of_possible_next_states.Add(change.next_state_string);
+                    }
                 }
-                else
-                {
-                    MessageQueue m = Form1.list_of_message_queues.Single(r => r.from == change.from);
-                    if (m.signals.Peek() == change.signal)
-                        Form1.list_of_possible_next_states.Add(change.next_state.state_name);
-                }
+            }
+            catch (Exception e) 
+            {
+                MessageBox.Show("blad" + e);
             }
         }
         //zmienia stan
@@ -64,7 +72,7 @@ namespace FSM_Simulator
             Random rand = new Random(DateTime.Now.ToString().GetHashCode());
             int index = rand.Next(0, Form1.list_of_possible_next_states.Count);
             //wybór przejscia
-            StateChange change = Form1.state_present.list_of_state_changes.Single(r => r.next_state.state_name == Form1.list_of_possible_next_states[index]);
+            StateChange change = Form1.state_present.list_of_state_changes.Single(r => r.next_state_string == Form1.list_of_possible_next_states[index]);
             if (change.type == StateChange.Type.SEND)
             {
                 Message m = create_message(true, Form1.message_counter, Form1.FSM_name, change.to, change.signal);
