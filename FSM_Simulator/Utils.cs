@@ -51,13 +51,20 @@ namespace FSM_Simulator
                     if ((change.type == StateChange.Type.SEND) || (change.type == StateChange.Type.TAU))
                     {
                         string name = change.next_state_string;
-                        Form1.list_of_possible_next_states.Add(name);
+                        Form1.list_of_possible_next_states.Add(change);
                     }
                     else
                     {
-                        MessageQueue m = Form1.list_of_message_queues.Single(r => r.from == change.from);
-                        if (m.signals.Peek() == change.signal)
-                            Form1.list_of_possible_next_states.Add(change.next_state_string);
+                        try
+                        {
+                            MessageQueue m = Form1.list_of_message_queues.Single(r => r.from == change.from);
+                            if (m.signals.Peek() == change.signal)
+                                Form1.list_of_possible_next_states.Add(change);
+                        }
+                        catch
+                        {
+
+                        }
                     }
                 }
             }
@@ -72,23 +79,24 @@ namespace FSM_Simulator
             Random rand = new Random(DateTime.Now.ToString().GetHashCode());
             int index = rand.Next(0, Form1.list_of_possible_next_states.Count);
             //wybór przejscia
-            StateChange change = Form1.state_present.list_of_state_changes.Single(r => r.next_state_string == Form1.list_of_possible_next_states[index]);
+            StateChange change = Form1.state_present.list_of_state_changes.Single(r => r == Form1.list_of_possible_next_states[index]);
             if (change.type == StateChange.Type.SEND)
             {
                 Message m = create_message(true, Form1.message_counter, Form1.FSM_name, change.to, change.signal);
                 send_message(m);
                 Form1.message_counter++;
-                Form1.state_present = change.next_state;
+                Form1.state_present = Form1.list_of_states.Single(r => r.state_name == change.next_state_string);
+
             }
             if (change.type == StateChange.Type.RECIEVE)
             {
                 MessageQueue q = Form1.list_of_message_queues.Single(r => r.from == change.from);
                 q.signals.Dequeue();
-                Form1.state_present = change.next_state;
+                Form1.state_present = Form1.list_of_states.Single(r => r.state_name == change.next_state_string);
             }
             if (change.type == StateChange.Type.TAU)
             {
-                Form1.state_present = change.next_state;
+                Form1.state_present = Form1.list_of_states.Single(r => r.state_name == change.next_state_string);
             }
         }
         //tworzy wiadomosc do wyslania

@@ -17,18 +17,17 @@ namespace FSM_Simulator
         [STAThread]
         static void Main(string[] args)
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
 
-            form = new Form1();
+                form = new Form1();
 
-            if (args.Count() != 0 && File.Exists(args[0]))
-            {
-                form.load_from_xml(args[0]);
+                if (args.Count() != 0 && File.Exists(args[0]))
+                {
+                    form.load_from_xml(args[0]);
 
-                Application.Run(form);
+                    Application.Run(form);
+                }
             }
-        }
-
     }
 }

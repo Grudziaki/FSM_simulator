@@ -16,7 +16,7 @@ namespace FSM_Simulator
         //lista wszystkich stanów automatu FSM
         public static List<State> list_of_states = new List<State>();
         //lista możliwych przejsc po uwzglednieniu kolejek
-        public static List<string> list_of_possible_next_states = new List<string>();
+        public static List<StateChange> list_of_possible_next_states = new List<StateChange>();
         //lista wszystkich kolejek automatu FSM
         public static List<MessageQueue> list_of_message_queues = new List<MessageQueue>();
         //Obecny stan automatu
@@ -71,7 +71,7 @@ namespace FSM_Simulator
 
         private void button1_Click(object sender, EventArgs e)
         {
-            
+            label4.Text = state_present.state_name;
             show_possible_changes();
         }
 
@@ -84,10 +84,17 @@ namespace FSM_Simulator
         {
             richTextBox1.Clear();
             Utils.check_possible_states();
-            foreach (string change in list_of_possible_next_states)
+            foreach (StateChange change in list_of_possible_next_states)
             {
-                richTextBox1.AppendText(Environment.NewLine + change);
+                richTextBox1.AppendText(Environment.NewLine + change.next_state_string + " " + change.type);
             } 
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Utils.change_state();
+            show_possible_changes();
+            label4.Text = state_present.state_name;
         }
     }
 }
