@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -27,6 +28,14 @@ namespace FSM_Simulator
         public static int message_counter = 0;
 
         public static Listener server;
+
+        public static Boolean PsujOnOff = false;
+
+        public static System.Threading.Timer Timer;
+
+        public static int timeout;
+
+        public static Boolean turnOnTimer = false;
 
         public Form1()
         {
@@ -113,15 +122,39 @@ namespace FSM_Simulator
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Utils.change_state();
+            if (turnOnTimer) {
+                timeout = Convert.ToInt32(textBox1.Text);
+                Timer = new System.Threading.Timer(new TimerCallback(Utils.change_state), null, 2000, timeout * 1000);
+            }
+            else
+                Utils.change_state();
             show_possible_changes();
             refresh_queues();
             label4.Text = state_present.state_name;
         }
-
+    
         private void Form1_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox1.Checked)
+                PsujOnOff = true;
+            else
+                PsujOnOff = false;
+        }
+
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox2.Checked)
+                turnOnTimer = true;
+            else
+            {
+                Timer.Change(Timeout.Infinite, Timeout.Infinite);
+                turnOnTimer = false;
+            }
         }
     }
 }

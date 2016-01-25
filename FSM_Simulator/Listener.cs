@@ -10,7 +10,9 @@ using System.Windows.Forms;
 namespace FSM_Simulator
 {
     public class Listener
+
     {
+        Boolean lose_signals;
         UdpClient udpServer = new UdpClient();
         public void CreateServer()
         {
@@ -44,8 +46,18 @@ namespace FSM_Simulator
                 Message msg = (Message)Utils.DeserializeObject(message, typeof(Message));
                 if ((msg.from != Form1.FSM_name) && (msg.type_of_information == true))
                 {
-                    Utils.message_handler(msg);
-                    //MessageBox.Show("otrzymano od: " + msg.from + " sygnał: " + msg.signal);
+                    lose_signals = Form1.PsujOnOff;
+                    if (lose_signals == true)
+                    {
+                        Random rnd = new Random();
+                        bool flag = rnd.Next(0, 2) == 0;
+                        if (flag == true)
+                            Utils.message_handler(msg);
+                        else
+                            MessageBox.Show("Zgubiono wiadomość");
+                    }
+                    else
+                        Utils.message_handler(msg);
                     Program.form.refresh_queues();
                 }
 

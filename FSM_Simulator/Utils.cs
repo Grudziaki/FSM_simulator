@@ -74,8 +74,41 @@ namespace FSM_Simulator
             }
         }
         //zmienia stan
+        public static void change_state(object obj)
+        {
+
+            try
+            {
+                Random rand = new Random(DateTime.Now.ToString().GetHashCode());
+                int index = rand.Next(0, Form1.list_of_possible_next_states.Count);
+                //wybór przejscia
+                StateChange change = Form1.state_present.list_of_state_changes.Single(r => r == Form1.list_of_possible_next_states[index]);
+                if (change.type == StateChange.Type.SEND)
+                {
+                    Message m = create_message(true, Form1.message_counter, Form1.FSM_name, change.to, change.signal);
+                    send_message(m);
+                    Form1.message_counter++;
+                    Form1.state_present = Form1.list_of_states.Single(r => r.state_name == change.next_state_string);
+                }
+                if (change.type == StateChange.Type.RECIEVE)
+                {
+                    MessageQueue q = Form1.list_of_message_queues.Single(r => r.from == change.from);
+                    q.signals.Dequeue();
+                    Form1.state_present = Form1.list_of_states.Single(r => r.state_name == change.next_state_string);
+                }
+                if (change.type == StateChange.Type.TAU)
+                {
+                    Form1.state_present = Form1.list_of_states.Single(r => r.state_name == change.next_state_string);
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Błąd zmiany stanu: " + e);
+            }
+        }
         public static void change_state()
         {
+
             try
             {
                 Random rand = new Random(DateTime.Now.ToString().GetHashCode());
@@ -146,22 +179,6 @@ namespace FSM_Simulator
         public static void send_message(Message msg)
         {
             Form1.server.Send(msg);
-        }
-
-        //Psuj, jeśli true to może zgubić sygnał
-        public static void lose_some_signals(bool lose_signals, Message msg)
-        {
-            if (lose_signals == true)
-            {
-                Random rnd = new Random();
-                bool flag = rnd.Next(0, 2) == 0;
-                if (flag == true)
-                    message_handler(msg);
-                else
-                    MessageBox.Show("Zgubiono wiadomość");
-            }
-            else
-                message_handler(msg);
         }
     }
 }
