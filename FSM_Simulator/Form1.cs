@@ -122,12 +122,23 @@ namespace FSM_Simulator
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if (turnOnTimer) {
+            if (turnOnTimer)
+            {
                 timeout = Convert.ToInt32(textBox1.Text);
-                Timer = new System.Threading.Timer(new TimerCallback(Utils.change_state), null, 2000, timeout * 1000);
+                Timer = new System.Threading.Timer(new TimerCallback(timer_tick), null, 2000, timeout * 1000);
             }
             else
+            {
                 Utils.change_state();
+                show_possible_changes();
+                refresh_queues();
+                label4.Text = state_present.state_name;
+            }
+        }
+
+        private void timer_tick(object obj)
+        {
+            Utils.change_state();
             show_possible_changes();
             refresh_queues();
             label4.Text = state_present.state_name;
