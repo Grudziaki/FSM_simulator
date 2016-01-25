@@ -13,7 +13,7 @@ namespace FSM_Simulator
         /// <summary>
         /// Główny punkt wejścia dla aplikacji.
         /// </summary>
-        private static Form1 form;
+        public static Form1 form;
         [STAThread]
         static void Main(string[] args)
         {
@@ -25,7 +25,7 @@ namespace FSM_Simulator
                 if (args.Count() != 0 && File.Exists(args[0]))
                 {
                     form.load_from_xml(args[0]);
-
+                    
                     Application.Run(form);
                 }
             }

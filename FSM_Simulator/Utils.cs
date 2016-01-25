@@ -76,27 +76,33 @@ namespace FSM_Simulator
         //zmienia stan
         public static void change_state()
         {
-            Random rand = new Random(DateTime.Now.ToString().GetHashCode());
-            int index = rand.Next(0, Form1.list_of_possible_next_states.Count);
-            //wybór przejscia
-            StateChange change = Form1.state_present.list_of_state_changes.Single(r => r == Form1.list_of_possible_next_states[index]);
-            if (change.type == StateChange.Type.SEND)
+            try
             {
-                Message m = create_message(true, Form1.message_counter, Form1.FSM_name, change.to, change.signal);
-                send_message(m);
-                Form1.message_counter++;
-                Form1.state_present = Form1.list_of_states.Single(r => r.state_name == change.next_state_string);
-
+                Random rand = new Random(DateTime.Now.ToString().GetHashCode());
+                int index = rand.Next(0, Form1.list_of_possible_next_states.Count);
+                //wybór przejscia
+                StateChange change = Form1.state_present.list_of_state_changes.Single(r => r == Form1.list_of_possible_next_states[index]);
+                if (change.type == StateChange.Type.SEND)
+                {
+                    Message m = create_message(true, Form1.message_counter, Form1.FSM_name, change.to, change.signal);
+                    send_message(m);
+                    Form1.message_counter++;
+                    Form1.state_present = Form1.list_of_states.Single(r => r.state_name == change.next_state_string);
+                }
+                if (change.type == StateChange.Type.RECIEVE)
+                {
+                    MessageQueue q = Form1.list_of_message_queues.Single(r => r.from == change.from);
+                    q.signals.Dequeue();
+                    Form1.state_present = Form1.list_of_states.Single(r => r.state_name == change.next_state_string);
+                }
+                if (change.type == StateChange.Type.TAU)
+                {
+                    Form1.state_present = Form1.list_of_states.Single(r => r.state_name == change.next_state_string);
+                }
             }
-            if (change.type == StateChange.Type.RECIEVE)
+            catch (Exception e)
             {
-                MessageQueue q = Form1.list_of_message_queues.Single(r => r.from == change.from);
-                q.signals.Dequeue();
-                Form1.state_present = Form1.list_of_states.Single(r => r.state_name == change.next_state_string);
-            }
-            if (change.type == StateChange.Type.TAU)
-            {
-                Form1.state_present = Form1.list_of_states.Single(r => r.state_name == change.next_state_string);
+                MessageBox.Show("Błąd zmiany stanu: " + e);
             }
         }
         //tworzy wiadomosc do wyslania
@@ -131,6 +137,7 @@ namespace FSM_Simulator
                     msgQueue.from = msg.from;
                     msgQueue.signals.Enqueue(msg.signal);
                     Form1.list_of_message_queues.Add(msgQueue);
+                    Program.form.refresh_queues();
                 }
                 msg.type_of_information = false;
                 send_message(msg);
@@ -139,7 +146,7 @@ namespace FSM_Simulator
         //zrobić!!!
         public static void send_message(Message msg)
         {
-
+            Form1.server.Send(msg);
         }
 
         //Psuj, jeśli true to może zgubić sygnał
@@ -157,6 +164,5 @@ namespace FSM_Simulator
             else
                 message_handler(msg);
         }
-
     }
 }

@@ -26,19 +26,23 @@ namespace FSM_Simulator
 
         public static int message_counter = 0;
 
+        public static Listener server;
+
         public Form1()
         {
             try
             {
                 InitializeComponent();
                 show_possible_changes();
-                
+                button2.Enabled = false;
+                server = new Listener();
+                server.CreateServer();
+                server.StartListening();
             }
             catch(Exception e)
             {
                 MessageBox.Show("blad: " + e);
             }
-            
         }
 
         //wczytuje opis automatu z pliku .xml
@@ -48,7 +52,8 @@ namespace FSM_Simulator
             try
             {
                 XDocument config = XDocument.Load(filename);
-                
+                XElement name = config.Element("FSM");
+                FSM_name = (string)name.Attribute("Name");
                 foreach (XElement state in config.Descendants("State"))
                 {
                     State stan = new State();
@@ -69,32 +74,49 @@ namespace FSM_Simulator
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        public void refresh_queues()
         {
-            label4.Text = state_present.state_name;
-            show_possible_changes();
+            richTextBox2.Clear();
+            foreach (MessageQueue queue in list_of_message_queues)
+            {
+                if (queue.signals.Count() != 0)
+                {
+                    richTextBox2.AppendText(Environment.NewLine + "Kolejka: " + queue.from);
+                    richTextBox2.AppendText(Environment.NewLine + "Sygnał: " + queue.signals.Peek());
+                }
+            }
         }
 
-        private void richTextBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        public void show_possible_changes() 
+        public void show_possible_changes()
         {
             richTextBox1.Clear();
             Utils.check_possible_states();
             foreach (StateChange change in list_of_possible_next_states)
             {
                 richTextBox1.AppendText(Environment.NewLine + change.next_state_string + " " + change.type);
-            } 
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            label4.Text = state_present.state_name;
+            show_possible_changes();
+            button2.Enabled = true;
+            button1.Enabled = false;
+            this.Text = FSM_name;
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             Utils.change_state();
             show_possible_changes();
+            refresh_queues();
             label4.Text = state_present.state_name;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
