@@ -107,7 +107,7 @@ namespace FSM_Simulator
                 button2.Enabled = true;
                 foreach (StateChange change in list_of_possible_next_states)
                 {
-                    richTextBox1.AppendText(Environment.NewLine + change.next_state_string + " " + change.type);
+                    richTextBox1.AppendText(Environment.NewLine + change.next_state_string + " " + change.type + " " + change.from + change.to + " " + change.signal);
                 }
         }
 

@@ -130,6 +130,8 @@ namespace FSM_Simulator
         public static void message_handler(Message msg)
         {
             bool flag_exist = false;
+            if (msg.to == Form1.FSM_name)
+            {
                 foreach (MessageQueue msg_Queue in Form1.list_of_message_queues)
                 {
                     if (msg.from == msg_Queue.from)
@@ -148,6 +150,7 @@ namespace FSM_Simulator
                 }
                 msg.type_of_information = false;
                 send_message(msg);
+            }
         }
         //wysyla wiadomosc na broadcascie przez UDP 
         //zrobić!!!

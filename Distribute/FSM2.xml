@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<FSM Name="FSM1">
+<FSM Name="FSM2">
 	<State State_Name="S0">
 		<State_Hop Next_State="S0" State_Type="TAU" Signal_From="" Signal_To="" Signal="" />
-		<State_Hop Next_State="S1" State_Type="SEND" Signal_From="" Signal_To="FSM2" Signal="x" />
+		<State_Hop Next_State="S1" State_Type="SEND" Signal_From="" Signal_To="FSM1" Signal="y" />
 	</State>
 	<State State_Name="S1">
-		<State_Hop Next_State="S0" State_Type="TAU" Signal_From="" Signal_To="" Signal="" />
+		<State_Hop Next_State="S1" State_Type="RECIEVE" Signal_From="FSM1" Signal_To="" Signal="x" />
 	</State>
 </FSM>
  
