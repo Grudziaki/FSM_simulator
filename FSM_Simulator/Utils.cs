@@ -79,60 +79,72 @@ namespace FSM_Simulator
 
             try
             {
-                Random rand = new Random(DateTime.Now.ToString().GetHashCode());
-                int index = rand.Next(0, Form1.list_of_possible_next_states.Count);
-                //wybór przejscia
-                StateChange change = Form1.state_present.list_of_state_changes.Single(r => r == Form1.list_of_possible_next_states[index]);
-                if (change.type == StateChange.Type.SEND)
+                if (Form1.list_of_possible_next_states.Count != 0)
                 {
-                    Message m = create_message(true, Form1.message_counter, Form1.FSM_name, change.to, change.signal);
-                    send_message(m);
-                    Form1.message_counter++;
-                    Form1.state_present = Form1.list_of_states.Single(r => r.state_name == change.next_state_string);
+                    Random rand = new Random(DateTime.Now.ToString().GetHashCode());
+                    int index = rand.Next(0, Form1.list_of_possible_next_states.Count);
+                    //wybór przejscia
+                    StateChange change = Form1.state_present.list_of_state_changes.Single(r => r == Form1.list_of_possible_next_states[index]);
+                    if (change.type == StateChange.Type.SEND)
+                    {
+                        Message m = create_message(true, Form1.message_counter, Form1.FSM_name, change.to, change.signal);
+                        send_message(m);
+                        Form1.message_counter++;
+                        Form1.state_present = Form1.list_of_states.Single(r => r.state_name == change.next_state_string);
+                    }
+                    if (change.type == StateChange.Type.RECIEVE)
+                    {
+                        MessageQueue q = Form1.list_of_message_queues.Single(r => r.from == change.from);
+                        q.signals.Dequeue();
+                        Form1.state_present = Form1.list_of_states.Single(r => r.state_name == change.next_state_string);
+                    }
+                    if (change.type == StateChange.Type.TAU)
+                    {
+                        Form1.state_present = Form1.list_of_states.Single(r => r.state_name == change.next_state_string);
+                    }
                 }
-                if (change.type == StateChange.Type.RECIEVE)
-                {
-                    MessageQueue q = Form1.list_of_message_queues.Single(r => r.from == change.from);
-                    q.signals.Dequeue();
-                    Form1.state_present = Form1.list_of_states.Single(r => r.state_name == change.next_state_string);
-                }
-                if (change.type == StateChange.Type.TAU)
-                {
-                    Form1.state_present = Form1.list_of_states.Single(r => r.state_name == change.next_state_string);
-                }
+                else {}
             }
             catch (Exception e)
             {
                 MessageBox.Show("Błąd zmiany stanu: " + e);
             }
+        
         }
         public static void change_state()
         {
 
             try
             {
-                Random rand = new Random(DateTime.Now.ToString().GetHashCode());
-                int index = rand.Next(0, Form1.list_of_possible_next_states.Count);
-                //wybór przejscia
-                StateChange change = Form1.state_present.list_of_state_changes.Single(r => r == Form1.list_of_possible_next_states[index]);
-                if (change.type == StateChange.Type.SEND)
+                if (Form1.list_of_possible_next_states.Count != 0)
                 {
-                    Message m = create_message(true, Form1.message_counter, Form1.FSM_name, change.to, change.signal);
-                    send_message(m);
-                    Form1.message_counter++;
-                    Form1.state_present = Form1.list_of_states.Single(r => r.state_name == change.next_state_string);
+                    Random rand = new Random(DateTime.Now.ToString().GetHashCode());
+
+                    int index = rand.Next(0, Form1.list_of_possible_next_states.Count);
+                    //wybór przejscia
+                    StateChange change = Form1.state_present.list_of_state_changes.Single(r => r == Form1.list_of_possible_next_states[index]);
+                    if (change.type == StateChange.Type.SEND)
+                    {
+                        Message m = create_message(true, Form1.message_counter, Form1.FSM_name, change.to, change.signal);
+                        send_message(m);
+                        Form1.message_counter++;
+                        Form1.state_present = Form1.list_of_states.Single(r => r.state_name == change.next_state_string);
+                    }
+                    if (change.type == StateChange.Type.RECIEVE)
+                    {
+                        MessageQueue q = Form1.list_of_message_queues.Single(r => r.from == change.from);
+                        q.signals.Dequeue();
+                        Form1.state_present = Form1.list_of_states.Single(r => r.state_name == change.next_state_string);
+                    }
+                    if (change.type == StateChange.Type.TAU)
+                    {
+                        Form1.state_present = Form1.list_of_states.Single(r => r.state_name == change.next_state_string);
+                    }
+
                 }
-                if (change.type == StateChange.Type.RECIEVE)
-                {
-                    MessageQueue q = Form1.list_of_message_queues.Single(r => r.from == change.from);
-                    q.signals.Dequeue();
-                    Form1.state_present = Form1.list_of_states.Single(r => r.state_name == change.next_state_string);
-                }
-                if (change.type == StateChange.Type.TAU)
-                {
-                    Form1.state_present = Form1.list_of_states.Single(r => r.state_name == change.next_state_string);
-                }
+                else { }
             }
+
             catch (Exception e)
             {
                 MessageBox.Show("Błąd zmiany stanu: " + e);
