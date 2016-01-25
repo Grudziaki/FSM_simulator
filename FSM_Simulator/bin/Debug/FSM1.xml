@@ -5,8 +5,7 @@
 		<State_Hop Next_State="S1" State_Type="SEND" Signal_From="" Signal_To="FSM2" Signal="x" />
 	</State>
 	<State State_Name="S1">
-		<State_Hop Next_State="S0" State_Type="SEND" Signal_From="" Signal_To="FSM2" Signal="y" />
-		<State_Hop Next_State="S1" State_Type="RECIEVE" Signal_From="FSM2" Signal_To="" Signal="y" />
+		<State_Hop Next_State="S0" State_Type="TAU" Signal_From="" Signal_To="" Signal="" />
 	</State>
 </FSM>
  

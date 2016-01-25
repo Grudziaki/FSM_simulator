@@ -45,7 +45,8 @@ namespace FSM_Simulator
                 if ((msg.from != Form1.FSM_name) && (msg.type_of_information == true))
                 {
                     Utils.message_handler(msg);
-                    MessageBox.Show("otrzymano od: " + msg.from + " sygnał: " + msg.signal);
+                    //MessageBox.Show("otrzymano od: " + msg.from + " sygnał: " + msg.signal);
+                    Program.form.refresh_queues();
                 }
 
             }

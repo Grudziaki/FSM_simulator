@@ -137,7 +137,6 @@ namespace FSM_Simulator
                     msgQueue.from = msg.from;
                     msgQueue.signals.Enqueue(msg.signal);
                     Form1.list_of_message_queues.Add(msgQueue);
-                    Program.form.refresh_queues();
                 }
                 msg.type_of_information = false;
                 send_message(msg);

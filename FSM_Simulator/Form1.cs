@@ -85,16 +85,21 @@ namespace FSM_Simulator
                     richTextBox2.AppendText(Environment.NewLine + "Sygnał: " + queue.signals.Peek());
                 }
             }
+            show_possible_changes();
         }
 
         public void show_possible_changes()
         {
             richTextBox1.Clear();
             Utils.check_possible_states();
-            foreach (StateChange change in list_of_possible_next_states)
-            {
-                richTextBox1.AppendText(Environment.NewLine + change.next_state_string + " " + change.type);
-            }
+            if (list_of_possible_next_states.Count() == 0)
+                button2.Enabled = false;
+            else
+                button2.Enabled = true;
+                foreach (StateChange change in list_of_possible_next_states)
+                {
+                    richTextBox1.AppendText(Environment.NewLine + change.next_state_string + " " + change.type);
+                }
         }
 
         private void button1_Click(object sender, EventArgs e)
