@@ -45,6 +45,7 @@ namespace FSM_Simulator
         {
             public string from;
             public Queue<string> signals = new Queue<string>();
+            public Queue<int> increment = new Queue<int>();
         }
     //wiadomosc przesylana miedzy automatami
     public class Message

@@ -96,8 +96,11 @@ namespace FSM_Simulator
                     if (change.type == StateChange.Type.RECIEVE)
                     {
                         MessageQueue q = Form1.list_of_message_queues.Single(r => r.from == change.from);
+                        Message m = create_message(false, q.increment.Peek(), q.from, Form1.FSM_name, q.signals.Peek());
                         q.signals.Dequeue();
+                        q.increment.Dequeue();
                         Form1.state_present = Form1.list_of_states.Single(r => r.state_name == change.next_state_string);
+                        send_message(m);
                     }
                     if (change.type == StateChange.Type.TAU)
                     {
@@ -137,6 +140,7 @@ namespace FSM_Simulator
                     if (msg.from == msg_Queue.from)
                     {
                         msg_Queue.signals.Enqueue(msg.signal);
+                        msg_Queue.increment.Enqueue(msg.i);
                         flag_exist = true;
                     }
                 }
@@ -146,10 +150,9 @@ namespace FSM_Simulator
                     MessageQueue msgQueue = new MessageQueue();
                     msgQueue.from = msg.from;
                     msgQueue.signals.Enqueue(msg.signal);
+                    msgQueue.increment.Enqueue(msg.i);
                     Form1.list_of_message_queues.Add(msgQueue);
                 }
-                msg.type_of_information = false;
-                send_message(msg);
             }
         }
         //wysyla wiadomosc na broadcascie przez UDP 
