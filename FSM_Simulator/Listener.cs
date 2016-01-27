@@ -43,7 +43,14 @@ namespace FSM_Simulator
                 Byte[] data = udpServer.EndReceive(ar, ref localEp);
 
                 string message = Encoding.UTF8.GetString(data);
-                Message msg = (Message)Utils.DeserializeObject(message, typeof(Message));
+                string[] msg_ = message.Split('-');
+                Message msg = new Message {
+                    from = msg_[0], to = msg_[1], type_of_information = Convert.ToBoolean(Convert.ToInt32(msg_[2]) - 1), signal = msg_[3], i = Convert.ToInt32(msg_[4])
+
+                };
+
+                
+              // Message msg = (Message)Utils.DeserializeObject(message, typeof(Message));
                 if ((msg.from != Form1.FSM_name) && (msg.type_of_information == true))
                 {
                     lose_signals = Form1.PsujOnOff;
@@ -78,8 +85,10 @@ namespace FSM_Simulator
 
                 Byte[] buffer = null;
 
-                string str = (string)Utils.SerializeObject(msg);
+                //string str = (string)Utils.SerializeObject(msg);
+                string str = msg.from + "-" + msg.to + "-" + (Convert.ToInt32(msg.type_of_information) + 1) + "-" + msg.signal + "-" + msg.i; 
                 buffer = Encoding.UTF8.GetBytes(str);
+               
                 udpclient.Send(buffer, buffer.Length, remoteep);
                 udpclient.Close();
 
